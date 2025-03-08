@@ -7,9 +7,9 @@ import User from "../db/models/user.model.js"; // Import User model
 
 
  passport.use(new GoogleStrategy({
-    clientID: "489152677230-45oeokcir9f804imm14m5l1ivs7q9r9c.apps.googleusercontent.com",
-    clientSecret: "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",
-    callbackURL: "http://localhost:3000/user/google/callback"
+    clientID: process.env.CLIENT_ID,
+    clientSecret: process.env.CLIENT_SECRET,
+    callbackURL: ` ${process.env.HOST}user/google/callback`
 }, async (accessToken, refreshToken, profile, done) => {
     try {
         let user = await User.findOne({ googleId: profile.id });

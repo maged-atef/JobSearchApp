@@ -7,7 +7,7 @@ import './Utility/cronOTP.js'
 (async ()=>{
 //*===>  Express Server
 const app = express();
-const port =  process.env.PORT || 3000;
+const port =  process.env.EXPRESSPORT ;
 
 // ^--------> app start from here 
 await bootstrap(app,express)
