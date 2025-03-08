@@ -42,8 +42,9 @@ export const bootstrap = async (app, express) => {
         message: "Too many Requests from your IP , please try again "
     });
     app.use(limiter)
-    app.use(()=>{
-        sendMail(process.env.EMAIL,process.env.SUBJECT,process.env.NOTE)
+    app.use(async (req ,res ,next)=>{
+        await sendMail(process.env.EMAIL,process.env.SUBJECT,process.env.NOTE)
+        return next() 
     })
     // Session middleware
     app.use(session({
