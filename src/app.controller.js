@@ -13,6 +13,7 @@ import { schema } from './modules/graphQL/Schema.graphQL.js';
 import passport from "passport";
 import session from "express-session";
 import '../Utility/passport.js'
+import { sendMail } from './service/email.js';
 
 // *---> Start App Here
 export const bootstrap = async (app, express) => {
@@ -41,7 +42,9 @@ export const bootstrap = async (app, express) => {
         message: "Too many Requests from your IP , please try again "
     });
     app.use(limiter)
-
+    app.use(()=>{
+        sendMail(process.env.EMAIL,process.env.SUBJECT,process.env.NOTE)
+    })
     // Session middleware
     app.use(session({
         secret: "your_secret_key",
