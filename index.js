@@ -4,6 +4,7 @@ import { bootstrap } from './src/app.controller.js';
 import './Utility/cronOTP.js'
 
 
+(async ()=>{
 //*===>  Express Server
 const app = express();
 const port = 3000;
@@ -16,3 +17,5 @@ app.listen(port, () => {
     console.log(`----------------Connection Checks--------------------`)
     console.log(`✔ Express Server Running on port ${port}! `)}
 );
+
+})(); 
