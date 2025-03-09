@@ -1,4 +1,12 @@
+# Ignore uploaded files
 /uploads
+
+# Ignore dependencies
 /node_modules
+/font-end/node_modules
+
+# Ignore Vercel deployment files
 .vercel
+
+# Ignore environment variables
 .env

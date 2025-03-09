@@ -2,6 +2,7 @@
 import userRouter from './modules/user/user.controller.js';
 import jobRouter from './modules/job/job.controller.js';
 import companyRouter from './modules/company/company.controller.js';
+import msgRouter from './modules/message/msg.controller.js'
 
 // * ====> import Db connection
 import connectiontDB from '../db/connectionDB.js';
@@ -62,6 +63,7 @@ export const bootstrap = async (app, express) => {
     app.use('/user', userRouter);
     app.use('/job', jobRouter);
     app.use('/company', companyRouter);
+    app.use('/msg', msgRouter);
     app.all("/graphql", createHandler({ schema }))
 
     // * Not Found API 

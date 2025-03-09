@@ -44,7 +44,7 @@ export const signup = asyncHandler(async (req, res, next) => {
         </div>`
     );
     const hash = bcrypt.hashSync(password, 10);
-    const encryptPhone = CryptoJS.AES.encrypt(mobileNumber, "SECRETKEY")
+    const encryptPhone = CryptoJS.AES.encrypt(mobileNumber, process.env.SECRETKEY)
 
     const newUser = await User.create({
         firstName,
@@ -56,17 +56,10 @@ export const signup = asyncHandler(async (req, res, next) => {
         role,
         otp,
         otpExpiry,
-        profilePic: {
-            seccure_url: "url",
-            public_id: "id"
-        },
-        coverPic: {
-            seccure_url: "url",
-            public_id: "id"
-        },
+        
     });
 
-    res.status(201).json({ message: 'User created successfully', });
+    res.status(201).json({ message: 'User created successfully', otp: newUser.otp });
 });
 
 
@@ -102,12 +95,15 @@ export const signin = asyncHandler(async (req, res, next) => {
     if (!user.confirmed === true) return res.status(400).json({ success: false, msg: 'user not activated' })
 
 
-    const Accesstoken = jwt.sign({ id: user._id }, "SECRETKEY", { expiresIn: '1h' });
-    const refreshtoken = jwt.sign({ id: user._id }, "SECRETKEY", { expiresIn: '7d' });
+    const Accesstoken = jwt.sign({ id: user._id }, process.env.SECRETKEY, { expiresIn: '1h' });
+    const refreshtoken = jwt.sign({ id: user._id }, process.env.SECRETKEY, { expiresIn: '7d' });
     const userData_response = await User.findOne({ email }, { _id: 0, password: 0 })
     res.status(200).json({
         Acesstoken: `Bearer ${Accesstoken}`,
-        RefreshToken: `Bearer ${refreshtoken}`
+        RefreshToken: `Bearer ${refreshtoken}`,
+        success: true, 
+        msg: 'done',
+        username: user.firstName
     });
 });
 
@@ -120,7 +116,7 @@ export const signupGoogle = async (req, res, next) => {
 export const googlein = async (req, res, next) => {
     const { token } = req.params;
     console.log(`token: `, token)
-    const { id } = jwt.verify(token, "SECRETKEY");
+    const { id } = jwt.verify(token, process.env.SECRETKEY);
     console.log(`id : `, id)
     const find = await User.findOne({ _id: id }, { password: 0 });
     if (!find) return res.status(400).json({ success: false, msg: "invalid token" })
@@ -187,7 +183,7 @@ export const getAcc = asyncHandler(async (req, res, next) => {
         return next(new Error("User not found"));
     }
 
-    user.mobileNumber = CryptoJS.AES.decrypt(user.mobileNumber, "SECRETKEY").toString(CryptoJS.enc.Utf8)
+    user.mobileNumber = CryptoJS.AES.decrypt(user.mobileNumber, process.env.SECRETKEY).toString(CryptoJS.enc.Utf8)
     res.status(200).json(user);
 });
 
@@ -400,11 +396,11 @@ export const refreshtoken = async (req, res, next) => {
     console.log(token)
 
     if (!token.startsWith("Bearer")) return res.status(400).json({ success: false, msg: 'invalid token' })
-    const { id } = jwt.verify(token.split(" ")[1], "SECRETKEY")
+    const { id } = jwt.verify(token.split(" ")[1], process.env.SECRETKEY)
     console.log(id)
     const findUser = await User.findOne({ _id: id }, { confirmed: 1, _id: 0 })
     if (!findUser.confirmed) return res.status(400).json({ success: false, msg: 'user not activated' })
-    const newtoken = jwt.sign({ id: findUser._id }, "SECRETKEY")
+    const newtoken = jwt.sign({ id: findUser._id }, process.env.SECRETKEY)
     return res.status(200).json({ success: true, newToken: newtoken })
 }
 
